@@ -1,0 +1,33 @@
+from fastapi import FastAPI, HTTPException
+
+app = FastAPI()
+
+users = [
+    {"id": 1, "name": "Ali", "address": "Tashkent"},
+    {"id": 2, "name": "Vali", "address": "Samarkand"},
+    {"id": 3, "name": "Hasan", "address": "Bukhara"},
+    {"id": 4, "name": "Husan", "address": "Tashkent"},
+    {"id": 5, "name": "Olim", "address": "Khiva"},
+]
+
+@app.get("/users")
+def get_users():
+    return users
+
+
+@app.get("/users/{user_id}")
+def get_user_by_id(user_id: int):
+    for user in users:
+        if user["id"] == user_id:
+            return user
+    raise HTTPException(status_code=404, detail="User topilmadi")
+
+
+@app.get("/users/address/{address}")
+def get_user_by_address(address: str):
+    result = [user for user in users if user["address"].lower() == address.lower()]
+    
+    if not result:
+        raise HTTPException(status_code=404, detail="Bu manzilda user topilmadi")
+    
+    return result
